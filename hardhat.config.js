@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require('dotenv').config()
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -23,8 +24,8 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
       chainId: 1337
     },
     mumbai: {
-      url: "https://rpc-mumbai.matic.today",
-      accounts: [process.env.pk]
+      url: process.env.ALCHEMY_URL,
+      accounts: [process.env.PRIVATE_KEY]
     },
     // polygon: {
     //   url: "https://polygon-rpc.com/",
