@@ -8,27 +8,36 @@ import { AccountContext } from '../../context'
 
 /* import contract and owner addresses */
 import {
-  contractAddress, ownerAddress
+  contractAddress, ownerAddress, nftContractAddress
 } from '../../config'
 import Blog from '../../artifacts/contracts/Blog.sol/Blog.json'
-import NFTMinter from '../../artifacts/contracts/NFTMinter.sol/MyToken.json'
+import NFTMinter from '../../artifacts/contracts/NFTMinter.sol/NFTMinter.json'
 
 const ipfsURI = 'https://ipfs.io/ipfs/'
-
 export default function Post({ post }) {
   const account = useContext(AccountContext)
   const router = useRouter()
   const { id } = router.query
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const nftContract = new ethers.Contract(contractAddress, NFTMinter, signer)
+  
+  
+  const metadataURI = post.metadataURI.replace(/^ipfs:\/\//, "");
 
   const mintToken = async () => {
-    const connection = nftContract.connect(signer);
-    const addr = connection.address;
-    const result = await nftContract.safeMint(addr, metadataURI)
-    await result.wait();
-    //needs to return some indicator or url of the nft 
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const nftContract = new ethers.Contract(nftContractAddress, NFTMinter.abi, signer);
+        const result = await nftContract.safeMint(account, metadataURI);
+        await result.wait();
+      console.log(`Mined, see transaction: https://rinkeby.etherscan.io/tx/${metadataURI}`);
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   if (router.isFallback) {

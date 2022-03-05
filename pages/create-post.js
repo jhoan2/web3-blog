@@ -14,7 +14,8 @@ import Blog from '../artifacts/contracts/Blog.sol/Blog.json'
 
 /* define the ipfs endpoint */
 const client = create('https://ipfs.infura.io:5001/api/v0')
-const nftStorageClient = new NFTStorage({ token: '' })
+const NFT_STORAGE_API = process.env.NFT_STORAGE_API;
+const nftStorageClient = new NFTStorage({ token: process.env.NFT_STORAGE_API })
 
 /* configure the markdown editor to be client-side import */
 const SimpleMDE = dynamic(
