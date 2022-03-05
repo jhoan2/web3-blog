@@ -23,10 +23,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     hardhat: {
       chainId: 1337
     },
-    mumbai: {
-      url: process.env.ALCHEMY_URL,
-      accounts: [process.env.PRIVATE_KEY]
-    },
+    // mumbai: {
+    //   url: process.env.ALCHEMY_URL,
+    //   accounts: [process.env.PRIVATE_KEY]
+    // },
     // polygon: {
     //   url: "https://polygon-rpc.com/",
     //   accounts: [process.env.pk]

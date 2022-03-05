@@ -11,6 +11,7 @@ import {
   contractAddress, ownerAddress
 } from '../../config'
 import Blog from '../../artifacts/contracts/Blog.sol/Blog.json'
+import NFTMinter from '../../artifacts/contracts/NFTMinter.sol/MyToken.json'
 
 const ipfsURI = 'https://ipfs.io/ipfs/'
 
@@ -18,11 +19,21 @@ export default function Post({ post }) {
   const account = useContext(AccountContext)
   const router = useRouter()
   const { id } = router.query
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const nftContract = new ethers.Contract(contractAddress, NFTMinter, signer)
+
+  const mintToken = async () => {
+    const connection = nftContract.connect(signer);
+    const addr = connection.address;
+    const result = await nftContract.safeMint(addr, metadataURI)
+    await result.wait();
+    //needs to return some indicator or url of the nft 
+  }
 
   if (router.isFallback) {
     return <div>Loading...</div>
   }
-
   return (
     <div>
       {
@@ -40,6 +51,7 @@ export default function Post({ post }) {
                 </div>
               )
             }
+            <button onClick={() => mintToken()}>Mint</button>
             {
               /* if the post has a cover image, render it */
               post.coverImage && (
