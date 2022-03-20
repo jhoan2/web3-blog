@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { css } from '@emotion/css'
 import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
-import { NFTStorage, File } from 'nft.storage'
+
 /* import contract address and contract owner address */
 import {
   contractAddress
@@ -14,8 +14,6 @@ import Blog from '../artifacts/contracts/Blog.sol/Blog.json'
 
 /* define the ipfs endpoint */
 const client = create('https://ipfs.infura.io:5001/api/v0')
-
-const nftStorageClient = new NFTStorage({ token: process.env.NEXT_PUBLIC_API })
 
 /* configure the markdown editor to be client-side import */
 const SimpleMDE = dynamic(
