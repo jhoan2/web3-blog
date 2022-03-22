@@ -6,22 +6,24 @@ describe("Blog", async function () {
     const Blog = await ethers.getContractFactory("Blog")
     const blog = await Blog.deploy("My blog")
     await blog.deployed()
-    await blog.createPost("My first post", "12345")
+    await blog.createPost("My first post", "12345", "tags tags")
 
     const posts = await blog.fetchPosts()
     expect(posts[0].title).to.equal("My first post")
+    expect(posts[0].tags).to.equal("tags tags")
   })
 
   it("Should edit a post", async function () {
     const Blog = await ethers.getContractFactory("Blog")
     const blog = await Blog.deploy("My blog")
     await blog.deployed()
-    await blog.createPost("My Second post", "12345")
+    await blog.createPost("My Second post", "12345", "tags tags")
 
-    await blog.updatePost(1, "My updated post", "23456", true)
+    await blog.updatePost(1, "My updated post", "23456", " ", true)
 
     posts = await blog.fetchPosts()
     expect(posts[0].title).to.equal("My updated post")
+    expect(posts[0].tags).to.equal(" ")
   })
 
   it("Should add update the name", async function () {
@@ -33,4 +35,5 @@ describe("Blog", async function () {
     await blog.updateName('My new blog')
     expect(await blog.name()).to.equal("My new blog")
   })
+
 })
