@@ -16,6 +16,7 @@ contract Blog {
       uint id;
       string title;
       string content;
+      string tags;
       bool published;
     }
     /* mappings can be seen as hash tables */
@@ -25,8 +26,8 @@ contract Blog {
 
     /* events facilitate communication between smart contractsand their user interfaces  */
     /* i.e. we can create listeners for events in the client and also use them in The Graph  */
-    event PostCreated(uint id, string title, string hash);
-    event PostUpdated(uint id, string title, string hash, bool published);
+    event PostCreated(uint id, string title, string hash, string tags);
+    event PostUpdated(uint id, string title, string hash, string tags, bool published);
 
     /* when the blog is deployed, give it a name */
     /* also set the creator as the owner of the contract */
@@ -52,7 +53,7 @@ contract Blog {
     }
 
     /* creates a new post */
-    function createPost(string memory title, string memory hash) public onlyOwner {
+    function createPost(string memory title, string memory hash, string memory tags) public onlyOwner {
         _postIds.increment();
         uint postId = _postIds.current();
         Post storage post = idToPost[postId];
@@ -60,19 +61,21 @@ contract Blog {
         post.title = title;
         post.published = true;
         post.content = hash;
+        post.tags = tags;
         hashToPost[hash] = post;
-        emit PostCreated(postId, title, hash);
+        emit PostCreated(postId, title, hash, tags);
     }
 
     /* updates an existing post */
-    function updatePost(uint postId, string memory title, string memory hash, bool published) public onlyOwner {
+    function updatePost(uint postId, string memory title, string memory hash, string memory tags, bool published) public onlyOwner {
         Post storage post =  idToPost[postId];
         post.title = title;
         post.published = published;
         post.content = hash;
+        post.tags = tags;
         idToPost[postId] = post;
         hashToPost[hash] = post;
-        emit PostUpdated(post.id, title, hash, published);
+        emit PostUpdated(post.id, title, hash, tags, published);
     }
 
     /* fetches all posts */

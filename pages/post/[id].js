@@ -11,7 +11,6 @@ import {
   contractAddress, ownerAddress, nftContractAddress
 } from '../../config'
 import Blog from '../../artifacts/contracts/Blog.sol/Blog.json'
-import NFTMinter from '../../artifacts/contracts/NFTMinter.sol/NFTMinter.json'
 
 const ipfsURI = 'https://ipfs.io/ipfs/'
 export default function Post({ post }) {
@@ -20,25 +19,6 @@ export default function Post({ post }) {
   const { id } = router.query
   
   
-  const metadataURI = post.metadataURI.replace(/^ipfs:\/\//, "");
-
-  const mintToken = async () => {
-    try {
-      const { ethereum } = window;
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const nftContract = new ethers.Contract(nftContractAddress, NFTMinter.abi, signer);
-        const result = await nftContract.safeMint(account, metadataURI);
-        await result.wait();
-      console.log(`Mined, see transaction: https://rinkeby.etherscan.io/tx/${metadataURI}`);
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   if (router.isFallback) {
     return <div>Loading...</div>
@@ -60,7 +40,6 @@ export default function Post({ post }) {
                 </div>
               )
             }
-            <button onClick={() => mintToken()}>Mint</button>
             {
               /* if the post has a cover image, render it */
               post.coverImage && (
