@@ -15,7 +15,6 @@ async function main() {
   fs.writeFileSync('./config.js', `
   export const contractAddress = "${blog.address}"
   export const ownerAddress = "${blog.signer.address}"
-  export const nftContractAddress = "${nftminter.address}"
   `)
 }
 

@@ -21,7 +21,7 @@ const SimpleMDE = dynamic(
   { ssr: false }
 )
 
-const initialState = { title: '', content: '' }
+const initialState = { title: '', content: '', tags: '' }
 
 function CreatePost() {
   /* configure initial state to be used in the component */
@@ -30,7 +30,7 @@ function CreatePost() {
   const [loaded, setLoaded] = useState(false)
 
   const fileRef = useRef(null)
-  const { title, content } = post
+  const { title, content, tags } = post
   const router = useRouter()
 
   useEffect(() => {
@@ -46,7 +46,7 @@ function CreatePost() {
 
   async function createNewPost() {   
     /* saves post to ipfs then anchors to smart contract */
-    if (!title || !content) return
+    if (!title || !content || !tags) return
     const hash = await savePostToIpfs()
     await savePost(hash)
     router.push(`/`)
@@ -70,7 +70,7 @@ function CreatePost() {
       const contract = new ethers.Contract(contractAddress, Blog.abi, signer)
       console.log('contract: ', contract)
       try {
-        const val = await contract.createPost(post.title, hash)
+        const val = await contract.createPost(post.title, hash, post.tags)
         /* optional - wait for transaction to be confirmed before rerouting */
         /* await provider.waitForTransaction(val.hash) */
         console.log('val: ', val)
@@ -90,12 +90,7 @@ function CreatePost() {
     const uploadedFile = e.target.files[0]
     if (!uploadedFile) return
     const added = await client.add(uploadedFile)
-    const metadata = await nftStorageClient.store({
-      name: title,
-      description: content,
-      image: uploadedFile
-    })
-    setPost(state => ({ ...state, coverImage: added.path, metadataURI: metadata.url }))
+    setPost(state => ({ ...state, coverImage: added.path }))
     setImage(uploadedFile)
   }
 
@@ -119,6 +114,12 @@ function CreatePost() {
         value={post.content}
         onChange={value => setPost({ ...post, content: value })}
       />
+      <input
+        onChange={onChange}
+        name='tags'
+        placeholder='Give it tags'
+        value={post.tags}
+      />      
       {
         loaded && (
           <>
