@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { AccountContext } from '../context'
+import Header from '../src/components/header/Header'
 
 /* import contract address and contract owner address */
 import {
@@ -26,6 +27,7 @@ export default function Home(props) {
 
   return (
     <div>
+      <Header />
       <div className={postList}>
         {
           /* map over the posts array and render a button with the post title */

@@ -8,7 +8,9 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import { AccountContext } from '../context.js'
 import { ownerAddress } from '../config'
 import 'easymde/dist/easymde.min.css'
-import Header from '../src/components/header/Header'
+import PageProvider from "../src/PageProvider";
+import { GlobalStyles } from "@mui/material";
+import { ThemeProvider } from "next-themes";
 
 function MyApp({ Component, pageProps }) {
   /* create local state to save account information after signin */
@@ -45,11 +47,32 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <div>
-      <Header />
+
       <div className={container}>
-        <AccountContext.Provider value={account}>
-          <Component {...pageProps} connect={connect} />
-        </AccountContext.Provider>
+        <ThemeProvider>
+          <PageProvider>
+            <GlobalStyles
+                styles={css`
+                  :root {
+                    body {
+                      background-color: #fff;
+                      color: #121212;
+                    }
+                  }
+    [data-theme="dark"] {
+                    body {
+                      background-color: #121212;
+                      color: #fff;
+                    }
+                  }
+                `}
+              />
+            <AccountContext.Provider value={account}>
+              <Component {...pageProps} connect={connect} />
+            </AccountContext.Provider>
+          </PageProvider>
+        </ThemeProvider>
+        
       </div>
     </div>
   )
