@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { ThemeProvider } from "@mui/material";
+import { useTheme } from 'next-themes';
 import { darkTheme, lightTheme } from "./theme";
-import { useTheme } from '@emotion/react';
 
 const PageProvider = ({ children }) => {
     const { resolvedTheme } = useTheme();
