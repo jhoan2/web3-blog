@@ -47,7 +47,6 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <div>
-
       <div className={container}>
         <ThemeProvider>
           <PageProvider>
@@ -72,7 +71,6 @@ function MyApp({ Component, pageProps }) {
             </AccountContext.Provider>
           </PageProvider>
         </ThemeProvider>
-        
       </div>
     </div>
   )
