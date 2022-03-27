@@ -12,7 +12,7 @@ export default function Banner() {
 
 const bannerTitle = css`
   text-align: center;
-  padding-top: 50px;  
+  padding-top: 25px;  
   background-color: #f32c03;
   background-image: linear-gradient(45deg, #f32c03, #9147FF);
   background-size: 100%;
