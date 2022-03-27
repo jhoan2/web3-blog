@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { AccountContext } from '../context'
 import Header from '../src/components/header/Header'
 import Banner from '../src/components/banner/Banner'
+import TagButton from '../src/components/tags/TagButton'
 
 /* import contract address and contract owner address */
 import {
@@ -30,6 +31,7 @@ export default function Home(props) {
     <div>
       <Header />
       <Banner />
+      <TagButton />
       <div className={postList}>
         {
           /* map over the posts array and render a button with the post title */
@@ -82,6 +84,7 @@ export async function getServerSideProps() {
   } else {
     provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
   }
+
 
   const contract = new ethers.Contract(contractAddress, Blog.abi, provider)
   const data = await contract.fetchPosts()
