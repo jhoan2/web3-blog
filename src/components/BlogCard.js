@@ -6,16 +6,19 @@ import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 
 export default function BlogCard({blog}) {
-    const { title, createdAtTimestamp, postContent } = blog
+    const { title, createdAtTimestamp, postContent, coverImage } = blog
     let timeToRead = Math.ceil((postContent.split(' ').length) / 250);
     let date = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(createdAtTimestamp * 1000)
-  return (
+    const ipfsURI = 'https://ipfs.io/ipfs/'
+    let cardImage = `${ipfsURI}/${coverImage}`
+
+    return (
     <Card>
         <CardActionArea>
             <CardMedia 
                 component='img'
                 height='140'
-                image='/placeholder-image.png'
+                image={coverImage? cardImage : '/placeholder-image.png'}
             />
             <CardContent>
                 <Typography variant='h5' component='div'>

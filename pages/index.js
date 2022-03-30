@@ -28,6 +28,7 @@ const query =  `
       published
       postTag
       postContent
+      coverImage
       createdAtTimestamp
       updatedAtTimestamp
     }
@@ -50,7 +51,6 @@ export default function Home() {
   async function fetchData() {
     const response = await client.query(query).toPromise()
     getTags(response.data)
-    console.log(response.data)
     setContent(response.data.posts)
     return 
   }
@@ -108,4 +108,3 @@ export default function Home() {
       </div>
   )
 }
-
