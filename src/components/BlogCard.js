@@ -7,8 +7,8 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 
 export default function BlogCard({blog}) {
     const { title, createdAtTimestamp, postContent } = blog
-    let timeToRead = Math.ceil(postContent.split(' ').length / 250);
-    
+    let timeToRead = Math.ceil((postContent.split(' ').length) / 250);
+    let date = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(createdAtTimestamp * 1000)
   return (
     <Card>
         <CardActionArea>
@@ -22,7 +22,7 @@ export default function BlogCard({blog}) {
                     {title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {createdAtTimestamp} - {timeToRead} min read
+                    {date} - {timeToRead} min read
                 </Typography>
             </CardContent>
         </CardActionArea>
