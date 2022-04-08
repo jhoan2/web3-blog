@@ -91,7 +91,7 @@ export default function Home() {
         {mdScreenSize ? 
         <p>Hello</p>
            :
-           <Masonry columns={{xs: 2}} spacing={2} >
+           <Masonry columns={{xs: 2}} spacing={2} sx={{marginTop: '15px'}}>
            {content ? 
              (content.map((blog) => {return <BlogCard blog={blog} key={blog.id} />})) :
              <h2>Needs Loading Page</h2>
