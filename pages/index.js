@@ -9,6 +9,9 @@ import Header from '../src/components/header/Header'
 import Banner from '../src/components/banner/Banner'
 import TagButton from '../src/components/tags/TagButton'
 import BlogCard from '../src/components/BlogCard'
+import Footer from '../src/components/Footer'
+import Masonry from '@mui/lab/Masonry';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 /* import contract address and contract owner address */
 import {
@@ -77,7 +80,7 @@ export default function Home() {
   async function navigate() {
     router.push('/create-post')
   }
-  
+  const mdScreenSize = useMediaQuery('(min-width:900px)');
   return (
       <div>
         <Header />
@@ -85,16 +88,25 @@ export default function Home() {
         {tags.map((tag, index) => {
           return <TagButton props={tag} key={index} />
         })}
-        <Grid container>
-          {content.map((blog) => {
-            return <Grid item><BlogCard blog={blog} key={blog.id}/></Grid>
-          })}
-        </Grid>
-        
-          {
+        {mdScreenSize ? 
+        <p>Hello</p>
+           :
+           <Masonry columns={{xs: 2}} spacing={2} >
+           {content ? 
+             (content.map((blog) => {return <BlogCard blog={blog} key={blog.id} />})) :
+             <h2>Needs Loading Page</h2>
+           }
+           </Masonry>
+        }
+
+          <Footer />
+      </div>
+
+
+  )
+}
+          {/* {
             (account === ownerAddress) && posts && !posts.length && (
-              /* if the signed in user is the account owner, render a button */
-              /* to create the first post */
               <button className={buttonStyle} onClick={navigate}>
                 Create your first post
                 <img
@@ -104,7 +116,4 @@ export default function Home() {
                 />
               </button>
             )
-          }
-      </div>
-  )
-}
+          } */}

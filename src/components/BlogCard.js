@@ -13,19 +13,18 @@ export default function BlogCard({blog}) {
     let cardImage = `${ipfsURI}/${coverImage}`
 
     return (
-    <Card>
-        <CardActionArea>
+    <Card >
+        <CardActionArea >
             <CardMedia 
                 component='img'
-                height='140'
-                image={coverImage? cardImage : '/placeholder-image.png'}
+                image={coverImage ? cardImage : '/placeholder-image.png'}
             />
-            <CardContent>
+            <CardContent >
                 <Typography variant='h5' component='div'>
                     {title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {date} - {timeToRead} min read
+                {timeToRead} min read - {date} 
                 </Typography>
             </CardContent>
         </CardActionArea>
