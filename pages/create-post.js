@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { css } from '@emotion/css'
 import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
-
+import Header from '../src/components/header/Header'
 /* import contract address and contract owner address */
 import {
   contractAddress
@@ -96,6 +96,7 @@ function CreatePost() {
 
   return (
     <div className={container}>
+      <Header />
       {
         image && (
           <img className={coverImageStyle} src={URL.createObjectURL(image)} />

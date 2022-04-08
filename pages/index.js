@@ -43,7 +43,7 @@ const client = createClient({
   url: APIURL
 })
 
-export default function Home() {
+export default function Home(pageProps) {
   const [tags, setTags] = useState([]);
   const [content, setContent] = useState();
   const tagMap = new Map();
@@ -78,13 +78,11 @@ export default function Home() {
   const account = useContext(AccountContext)
 
   const router = useRouter()
-  async function navigate() {
-    router.push('/create-post')
-  }
+
   const mdScreenSize = useMediaQuery('(min-width:900px)');
   return (
       <div>
-        <Header />
+        <Header pageProps={pageProps} />
         <Banner />
         {tags.map((tag, index) => {
           return <TagButton props={tag} key={index} />

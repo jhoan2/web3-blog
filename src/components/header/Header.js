@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import { ownerAddress } from '../../../config';
+import { ethers } from 'ethers'
+import Web3Modal from 'web3modal'
+import WalletConnectProvider from '@walletconnect/web3-provider'
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -16,11 +20,44 @@ import HomeIcon from '@mui/icons-material/Home';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import Link from 'next/link'
 
 export default function Header() {
     const [toggle, setToggle] = useState(false);
-
     const { theme, resolvedTheme, setTheme } = useTheme();
+
+  /* create local state to save account information after signin */
+  const [account, setAccount] = useState(null)
+  
+  /* web3Modal configuration for enabling wallet access */
+  async function getWeb3Modal() {
+    const web3Modal = new Web3Modal({
+      network: 'mainnet',
+      cacheProvider: false,
+      providerOptions: {
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: { 
+            infuraId: process.env.NEXT_PUBLIC_INFURA_ID
+          },
+        },
+      },
+    })
+    return web3Modal
+  }
+
+  /* the connect function uses web3 modal to connect to the user's wallet */
+  async function connect() {
+    try {
+      const web3Modal = await getWeb3Modal()
+      const connection = await web3Modal.connect()
+      const provider = new ethers.providers.Web3Provider(connection)
+      const accounts = await provider.listAccounts()
+      setAccount(accounts[0])
+    } catch (err) {
+      console.log('error:', err)
+    }
+  }
 
   return (
     <Grid
@@ -42,30 +79,52 @@ export default function Header() {
                 role="presentation"
                 onClick={() => setToggle(false)}
                 >
-                    <List>
+                {(account === ownerAddress) ?
+                <List>
+                    <ListItem disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon >
+                                <HomeIcon />
+                            </ListItemIcon>
+                            <Link href="/">
+                                <ListItemText primary="Home" />
+                            </Link>
+                        </ListItemButton>
+                    </ListItem>    
+                    <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <BorderColorIcon />
+                                </ListItemIcon>
+                                <Link href="/create-post">
+                                    <ListItemText primary="Create Post" />
+                                </Link>
+                            </ListItemButton>
+                        </ListItem>                         
+                </List> :
+                     <List>
                         <ListItem disablePadding>
                             <ListItemButton>
                                 <ListItemIcon>
                                     <HomeIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Home" />
+                                <Link href="/">
+                                    <ListItemText primary="Home" />
+                                </Link>
                             </ListItemButton>
-                        </ListItem> 
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <BorderColorIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Create Post" />
-                            </ListItemButton>
-                        </ListItem>                        
+                        </ListItem>      
                     </List>
+                }
                 </Box>
             </Drawer>
             </React.Fragment>
         </Grid>
         <Grid item>
             <Grid item container direction = 'row'>
+            {(account === ownerAddress) ? 
+                account :
+                <Button onClick={() => connect()}>Connect Wallet</Button>
+            }
             <IconButton 
                 sx={{ ml: 1 }} 
                 onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')} 
