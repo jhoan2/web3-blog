@@ -14,19 +14,19 @@ export default function BlogCard({blog}) {
 
     return (
     <Card >
-        <CardActionArea >
+        <CardActionArea>
             <CardMedia 
-                component='img'
-                image={coverImage ? cardImage : '/placeholder-image.png'}
-            />
-            <CardContent >
-                <Typography variant='h5' component='div'>
-                    {title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                {timeToRead} min read - {date} 
-                </Typography>
-            </CardContent>
+                    component='img'
+                    image={coverImage ? cardImage : '/placeholder-image.png'}
+                />
+                <CardContent >
+                    <Typography variant='h5' component='div'>
+                        {title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                    {timeToRead} min read - {date} 
+                    </Typography>
+                </CardContent>
         </CardActionArea>
     </Card>
   )

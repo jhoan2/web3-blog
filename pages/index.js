@@ -8,7 +8,8 @@ import Grid from '@mui/material/Grid';
 import Header from '../src/components/header/Header'
 import Banner from '../src/components/banner/Banner'
 import TagButton from '../src/components/tags/TagButton'
-import BlogCard from '../src/components/BlogCard'
+import BlogCard from '../src/components/blogcard/BlogCard'
+import TopBlogCard from '../src/components/blogcard/TopBlogCard'
 import Footer from '../src/components/Footer'
 import Masonry from '@mui/lab/Masonry';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -89,14 +90,24 @@ export default function Home() {
           return <TagButton props={tag} key={index} />
         })}
         {mdScreenSize ? 
-        <p>Hello</p>
+          (
+            <Grid container spacing={2}sx={{marginTop: '15px'}} >
+              <Grid item md={12}>
+                <TopBlogCard />
+              </Grid>
+              {content ? 
+                (content.map((blog) => {return <Grid item md={4} sx={{display:'flex', justifyContent:'flex-grow'}}> <BlogCard blog={blog} key={blog.id} /> </Grid>})) :
+                <h2>Needs Loading Page</h2>
+              }
+            </Grid>
+          )
            :
-           <Masonry columns={{xs: 2}} spacing={2} sx={{marginTop: '15px'}}>
+           (<Masonry columns={{xs: 2}} spacing={2} sx={{marginTop: '15px'}}>
            {content ? 
              (content.map((blog) => {return <BlogCard blog={blog} key={blog.id} />})) :
              <h2>Needs Loading Page</h2>
            }
-           </Masonry>
+           </Masonry>)
         }
 
           <Footer />
