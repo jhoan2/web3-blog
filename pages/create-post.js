@@ -23,7 +23,7 @@ const SimpleMDE = dynamic(
 
 const initialState = { title: '', content: '', tags: '' }
 
-function CreatePost() {
+function CreatePost(pageProps) {
   /* configure initial state to be used in the component */
   const [post, setPost] = useState(initialState)
   const [image, setImage] = useState(null)
@@ -32,7 +32,7 @@ function CreatePost() {
   const fileRef = useRef(null)
   const { title, content, tags } = post
   const router = useRouter()
-
+  
   useEffect(() => {
     setTimeout(() => {
       /* delay rendering buttons until dynamic import is complete */
@@ -96,7 +96,7 @@ function CreatePost() {
 
   return (
     <div className={container}>
-      <Header />
+      <Header pageProps={pageProps} />
       {
         image && (
           <img className={coverImageStyle} src={URL.createObjectURL(image)} />

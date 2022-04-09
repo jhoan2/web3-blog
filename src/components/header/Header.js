@@ -1,8 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { ownerAddress } from '../../../config';
-import { ethers } from 'ethers'
-import Web3Modal from 'web3modal'
-import WalletConnectProvider from '@walletconnect/web3-provider'
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -21,44 +18,15 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Link from 'next/link'
+import { AccountContext } from '../../../context'
 
-export default function Header() {
+export default function Header({pageProps}) {
     const [toggle, setToggle] = useState(false);
     const { theme, resolvedTheme, setTheme } = useTheme();
-
-  /* create local state to save account information after signin */
-  const [account, setAccount] = useState(null)
-  
-  /* web3Modal configuration for enabling wallet access */
-  async function getWeb3Modal() {
-    const web3Modal = new Web3Modal({
-      network: 'mainnet',
-      cacheProvider: false,
-      providerOptions: {
-        walletconnect: {
-          package: WalletConnectProvider,
-          options: { 
-            infuraId: process.env.NEXT_PUBLIC_INFURA_ID
-          },
-        },
-      },
-    })
-    return web3Modal
-  }
-
-  /* the connect function uses web3 modal to connect to the user's wallet */
-  async function connect() {
-    try {
-      const web3Modal = await getWeb3Modal()
-      web3Modal.clearCachedProvider()
-      const connection = await web3Modal.connect()
-      const provider = new ethers.providers.Web3Provider(connection)
-      const accounts = await provider.listAccounts()
-      setAccount(accounts[0])
-    } catch (err) {
-      console.log('error:', err)
+    const account = useContext(AccountContext);
+    if (pageProps) {
+        const { connect } = pageProps
     }
-  }
 
   return (
     <Grid
