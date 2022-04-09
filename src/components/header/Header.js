@@ -50,6 +50,7 @@ export default function Header() {
   async function connect() {
     try {
       const web3Modal = await getWeb3Modal()
+      web3Modal.clearCachedProvider()
       const connection = await web3Modal.connect()
       const provider = new ethers.providers.Web3Provider(connection)
       const accounts = await provider.listAccounts()
