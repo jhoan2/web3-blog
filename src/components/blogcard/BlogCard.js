@@ -6,23 +6,28 @@ import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ReactMarkdown from 'react-markdown'
+import { useRouter } from 'next/router'
 
 export default function BlogCard({blog}) {
-    const { title, createdAtTimestamp, postContent, coverImage } = blog
+    const { title, createdAtTimestamp, postContent, coverImage, contentHash } = blog
     let timeToRead = Math.ceil((postContent.split(' ').length) / 250);
     let date = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(createdAtTimestamp * 1000)
     const ipfsURI = 'https://ipfs.io/ipfs/'
     let cardImage = `${ipfsURI}/${coverImage}`
     let synopsis = postContent.split(' ').slice(0,10).join(' ')
     const mdScreenSize = useMediaQuery('(min-width:900px)');
+    const router = useRouter()
+    async function navigate() {
+      router.push(`/post/${contentHash}`)
+    }
     return (
     <Card sx={{display: 'flex', alignItems:'stretch'}}>
-        <CardActionArea>
+        <CardContent >
             <CardMedia 
                     component='img'
                     image={coverImage ? cardImage : '/placeholder-image.png'}
                 />
-            <CardContent >
+
                 <Typography variant='h5' component='div'>
                     {title}
                 </Typography>
@@ -35,7 +40,9 @@ export default function BlogCard({blog}) {
                 {timeToRead} min read - {date} 
                 </Typography>
             </CardContent>
-        </CardActionArea>
+            <CardActions>
+                <Button size="small" onClick={() => navigate()}>Read More</Button>
+            </CardActions>
     </Card>
   )
 }

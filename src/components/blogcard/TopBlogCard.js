@@ -5,11 +5,13 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
+import Link from 'next/link'
 
 export default function TopBlogCard() {
   return (
     <Card >
         <CardActionArea sx={{display: 'flex'}}>
+        
             <Box sx={{ width:'50%'}}>
                 <CardMedia component='img' image= '/placeholder-image.png' height='250px' />
                 
