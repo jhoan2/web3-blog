@@ -50,7 +50,7 @@ export default function Header({pageProps}) {
                 >
                 {(account === ownerAddress) ?
                 <List>
-                    <ListItem disablePadding>
+                    <ListItem disablePadding >
                         <ListItemButton>
                             <ListItemIcon >
                                 <HomeIcon />
@@ -60,7 +60,7 @@ export default function Header({pageProps}) {
                             </Link>
                         </ListItemButton>
                     </ListItem>    
-                    <ListItem disablePadding>
+                    <ListItem disablePadding >
                             <ListItemButton>
                                 <ListItemIcon>
                                     <BorderColorIcon />
@@ -72,7 +72,7 @@ export default function Header({pageProps}) {
                         </ListItem>                         
                 </List> :
                      <List>
-                        <ListItem disablePadding>
+                        <ListItem disablePadding >
                             <ListItemButton>
                                 <ListItemIcon>
                                     <HomeIcon />

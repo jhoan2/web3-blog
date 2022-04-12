@@ -94,7 +94,7 @@ export default function Home(pageProps) {
                 <TopBlogCard />
               </Grid>
               {content ? 
-                (content.map((blog) => {return <Grid item md={4} sx={{display:'flex', justifyContent:'flex-grow'}}> <BlogCard blog={blog} key={blog.id} /> </Grid>})) :
+                (content.map((blog) => {return <Grid item md={4} key={blog.id} sx={{display:'flex', justifyContent:'flex-grow'}}> <BlogCard blog={blog} key={blog.id} /> </Grid>})) :
                 <h2>Needs Loading Page</h2>
               }
             </Grid>
