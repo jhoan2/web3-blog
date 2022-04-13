@@ -1,7 +1,5 @@
-import { useContext, useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useState, useEffect } from 'react'
 import { createClient } from 'urql'
-import { AccountContext } from '../context'
 import Grid from '@mui/material/Grid';
 import Header from '../src/components/header/Header'
 import Banner from '../src/components/banner/Banner'
@@ -48,7 +46,7 @@ export default function Home(pageProps) {
   const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
   const query =  `
     query {
-      posts(first: 5) {
+      posts(first: 5, where:{postTag_contains: "${currentTag}"}) {
         id
         title
         contentHash
@@ -66,17 +64,15 @@ export default function Home(pageProps) {
     url: APIURL
   })
 
-  const account = useContext(AccountContext)
-
-  const router = useRouter()
 
   const mdScreenSize = useMediaQuery('(min-width:900px)');
+  console.log(currentTag)
   return (
       <div>
         <Header pageProps={pageProps} />
         <Banner />
         {tags.map((tag, index) => {
-          return <TagButton props={tag} key={index} />
+          return <TagButton tag={tag} key={index} setCurrentTag={setCurrentTag} />
         })}
         {mdScreenSize ? 
           (

@@ -5,6 +5,8 @@ import { css } from '@emotion/css'
 import dynamic from 'next/dynamic'
 import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
+import Header from '../../src/components/header/Header'
+
 
 import {
   contractAddress
@@ -19,7 +21,7 @@ const SimpleMDE = dynamic(
   { ssr: false }
 )
 
-export default function Post() {
+export default function Post({pageProps}) {
   const [post, setPost] = useState(null)
   const [editing, setEditing] = useState(true)
   const router = useRouter()
@@ -83,6 +85,7 @@ export default function Post() {
       /* editing state will allow the user to toggle between */
       /*  a markdown editor and a markdown renderer */
       }
+      <Header pageProps={pageProps}/>
       {
         editing && (
           <div>
