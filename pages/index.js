@@ -19,13 +19,22 @@ export default function Home(pageProps) {
   const tagMap = new Map();
 
   useEffect(() => {
+    fetchTags();
+  }, [])
+
+  useEffect(() => {
     fetchData();
   }, [currentTag])
+
+  async function fetchTags() {
+    const response = await client.query(query).toPromise()
+    getTags(response.data)
+    return 
+  }
 
   async function fetchData() {
     setLoading(true);
     const response = await client.query(query).toPromise()
-    getTags(response.data)
     setContent(response.data.posts)
     setLoading(false);
     return 
