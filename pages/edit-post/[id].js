@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
 import Header from '../../src/components/header/Header'
-
+import Loading from '../../src/components/Loading'
 
 import {
   contractAddress
@@ -24,6 +24,7 @@ const SimpleMDE = dynamic(
 export default function Post({pageProps}) {
   const [post, setPost] = useState(null)
   const [editing, setEditing] = useState(true)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { id } = router.query
 
@@ -33,6 +34,7 @@ export default function Post({pageProps}) {
   async function fetchPost() {
     /* we first fetch the individual post by ipfs hash from the network */
     if (!id) return
+    setLoading(true)
     let provider
     if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'local') {
       provider = new ethers.providers.JsonRpcProvider()
@@ -57,6 +59,7 @@ export default function Post({pageProps}) {
     /* we need this ID to make updates to the post */
     data.id = postId;
     setPost(data)
+    setLoading(false)
   }
 
   async function savePostToIpfs() {
@@ -87,7 +90,9 @@ export default function Post({pageProps}) {
       }
       <Header pageProps={pageProps}/>
       {
-        editing && (
+        loading ?
+          <Loading /> :
+          (editing && (
           <div>
             <input
               onChange={e => setPost({ ...post, title: e.target.value })}
@@ -109,11 +114,12 @@ export default function Post({pageProps}) {
               value={post.tags}
             />     
             <button className={button} onClick={updatePost}>Update post</button>
-          </div>
+          </div>)
         )
       }
-      {
-        !editing && (
+      { loading ?
+        <Loading /> :
+        (!editing && (
           <div>
             {
               post.coverImagePath && (
@@ -127,7 +133,7 @@ export default function Post({pageProps}) {
             <div className={contentContainer}>
               <ReactMarkdown>{post.content}</ReactMarkdown>
             </div>
-          </div>
+          </div>)
         )
       }
       <button className={button} onClick={() => setEditing(editing ? false : true)}>{ editing ? 'View post' : 'Edit post'}</button>
