@@ -50,7 +50,7 @@ export default function Home(pageProps) {
   const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
   const query =  `
     query {
-      posts(first: 5, where:{postTag_contains: "${currentTag}"}) {
+      posts(first: 5, where:{postTag_contains: "${currentTag}"}, orderBy: createdAtTimestamp, orderDirection:desc) {
         id
         title
         contentHash
