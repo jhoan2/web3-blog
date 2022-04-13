@@ -13,14 +13,6 @@ import Footer from '../src/components/Footer'
 import Masonry from '@mui/lab/Masonry';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-/* import contract address and contract owner address */
-import {
-  contractAddress, ownerAddress
-} from '../config'
-
-/* import Application Binary Interface (ABI) */
-import Blog from '../artifacts/contracts/Blog.sol/Blog.json'
-
 const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
 const query =  `
   query {
