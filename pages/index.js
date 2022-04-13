@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { ethers } from 'ethers'
 import { createClient } from 'urql'
 import { AccountContext } from '../context'
 import Grid from '@mui/material/Grid';
@@ -102,22 +101,9 @@ export default function Home(pageProps) {
            }
            </Masonry>)
         }
-
           <Footer />
       </div>
 
 
   )
 }
-          {/* {
-            (account === ownerAddress) && posts && !posts.length && (
-              <button className={buttonStyle} onClick={navigate}>
-                Create your first post
-                <img
-                  src='/right-arrow.svg'
-                  alt='Right arrow'
-                  className={arrow}
-                />
-              </button>
-            )
-          } */}
