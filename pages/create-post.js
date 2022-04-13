@@ -118,7 +118,7 @@ function CreatePost(pageProps) {
       <input
         onChange={onChange}
         name='tags'
-        placeholder='Give it tags'
+        placeholder='Put All first'
         value={post.tags}
       />      
       {

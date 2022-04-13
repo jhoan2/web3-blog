@@ -71,7 +71,7 @@ export default function Post() {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, Blog.abi, signer)
-    await contract.updatePost(post.id, post.title, hash, true)
+    await contract.updatePost(post.id, post.title, hash, post.tags, true)
     router.push('/')
   }
 
@@ -99,6 +99,12 @@ export default function Post() {
               value={post.content}
               onChange={value => setPost({ ...post, content: value })}
             />
+            <input
+              onChange={e => setPost({ ...post, tags: e.target.value })}
+              name='tags'
+              placeholder='Put All first'
+              value={post.tags}
+            />     
             <button className={button} onClick={updatePost}>Update post</button>
           </div>
         )

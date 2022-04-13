@@ -12,35 +12,15 @@ import Footer from '../src/components/Footer'
 import Masonry from '@mui/lab/Masonry';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
-const query =  `
-  query {
-    posts(first: 5) {
-      id
-      title
-      contentHash
-      published
-      postTag
-      postContent
-      coverImage
-      createdAtTimestamp
-      updatedAtTimestamp
-    }
-  }
-`
-
-const client = createClient({
-  url: APIURL
-})
-
 export default function Home(pageProps) {
   const [tags, setTags] = useState([]);
   const [content, setContent] = useState();
+  const [currentTag, setCurrentTag] = useState('All');
   const tagMap = new Map();
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [currentTag])
 
   async function fetchData() {
     const response = await client.query(query).toPromise()
@@ -64,7 +44,28 @@ export default function Home(pageProps) {
     setTags(tagArr)
     return tagMap
   }
-  
+
+  const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
+  const query =  `
+    query {
+      posts(first: 5) {
+        id
+        title
+        contentHash
+        published
+        postTag
+        postContent
+        coverImage
+        createdAtTimestamp
+        updatedAtTimestamp
+      }
+    }
+  `
+
+  const client = createClient({
+    url: APIURL
+  })
+
   const account = useContext(AccountContext)
 
   const router = useRouter()
