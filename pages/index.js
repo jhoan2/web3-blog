@@ -9,21 +9,25 @@ import TopBlogCard from '../src/components/blogcard/TopBlogCard'
 import Footer from '../src/components/Footer'
 import Masonry from '@mui/lab/Masonry';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Loading from '../src/components/Loading'
 
 export default function Home(pageProps) {
   const [tags, setTags] = useState([]);
   const [content, setContent] = useState();
   const [currentTag, setCurrentTag] = useState('All');
+  const [loading, setLoading] = useState(false);
   const tagMap = new Map();
 
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, [currentTag])
 
   async function fetchData() {
+    setLoading(true);
     const response = await client.query(query).toPromise()
     getTags(response.data)
     setContent(response.data.posts)
+    setLoading(false);
     return 
   }
 
@@ -66,7 +70,7 @@ export default function Home(pageProps) {
 
 
   const mdScreenSize = useMediaQuery('(min-width:900px)');
-  console.log(currentTag)
+
   return (
       <div>
         <Header pageProps={pageProps} />
@@ -74,33 +78,33 @@ export default function Home(pageProps) {
         {tags.map((tag, index) => {
           return <TagButton tag={tag} key={index} setCurrentTag={setCurrentTag} />
         })}
-        {mdScreenSize ? 
-          (
-            <Grid container spacing={2}sx={{marginTop: '15px'}} >
-              <Grid item md={12}>
-                <TopBlogCard />
+        { loading ? 
+          <Loading /> :
+          (mdScreenSize ? 
+            (
+              <Grid container spacing={2}sx={{marginTop: '15px'}} >
+                <Grid item md={12}>
+                  <TopBlogCard />
+                </Grid>
+                {content ? 
+                  (content.map((blog) => {
+                    return <Grid item md={4} key={blog.id} sx={{display:'flex', justifyContent:'flex-grow'}}> 
+                        <BlogCard blog={blog} key={blog.id} /> 
+                    </Grid>
+                  })) :
+                  <Loading /> 
+                }
               </Grid>
-              {content ? 
-                (content.map((blog) => {
-                  return <Grid item md={4} key={blog.id} sx={{display:'flex', justifyContent:'flex-grow'}}> 
-                      <BlogCard blog={blog} key={blog.id} /> 
-                  </Grid>
-                })) :
-                <h2>Needs Loading Page</h2>
-              }
-            </Grid>
-          )
-           :
-           (<Masonry columns={{xs: 2}} spacing={2} sx={{marginTop: '15px'}}>
-           {content ? 
-             (content.map((blog) => {return <BlogCard blog={blog} key={blog.id} />})) :
-             <h2>Needs Loading Page</h2>
-           }
-           </Masonry>)
-        }
+            )
+            :
+            (<Masonry columns={{xs: 2}} spacing={2} sx={{marginTop: '15px'}}>
+            {content ? 
+              (content.map((blog) => {return <BlogCard blog={blog} key={blog.id} />})) :
+              <Loading />
+            }
+            </Masonry>)
+          )}
           <Footer />
       </div>
-
-
   )
 }
