@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 export default function BlogCard({blog}) {
     const { title, createdAtTimestamp, postContent, coverImage, contentHash } = blog
     let timeToRead = Math.ceil((postContent.split(' ').length) / 250);
-    let date = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(createdAtTimestamp * 1000)
+    let date = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: '2-digit'}).format(createdAtTimestamp * 1000)
     const ipfsURI = 'https://ipfs.io/ipfs/'
     let cardImage = `${ipfsURI}/${coverImage}`
     let synopsis = postContent.split(' ').slice(0,10).join(' ')
