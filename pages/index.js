@@ -13,10 +13,36 @@ import Loading from '../src/components/Loading'
 
 export default function Home(pageProps) {
   const [tags, setTags] = useState([]);
-  const [content, setContent] = useState();
+  const [content, setContent] = useState([]);
   const [currentTag, setCurrentTag] = useState('All');
   const [loading, setLoading] = useState(false);
   const tagMap = new Map();
+  let mdScreenSizeContent = content.slice(1,content.length);
+  const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
+  const query =  `
+    query {
+      posts(first: 5, where:{postTag_contains: "${currentTag}"}, orderBy: createdAtTimestamp, orderDirection:desc) {
+        id
+        title
+        contentHash
+        published
+        postTag
+        postContent
+        coverImage
+        createdAtTimestamp
+        updatedAtTimestamp
+      }
+    }
+  `
+
+
+
+  const client = createClient({
+    url: APIURL
+  })
+
+  const mdScreenSize = useMediaQuery('(min-width:900px)');
+
 
   useEffect(() => {
     fetchTags();
@@ -56,30 +82,6 @@ export default function Home(pageProps) {
     return tagMap
   }
 
-  const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
-  const query =  `
-    query {
-      posts(first: 5, where:{postTag_contains: "${currentTag}"}, orderBy: createdAtTimestamp, orderDirection:desc) {
-        id
-        title
-        contentHash
-        published
-        postTag
-        postContent
-        coverImage
-        createdAtTimestamp
-        updatedAtTimestamp
-      }
-    }
-  `
-
-  const client = createClient({
-    url: APIURL
-  })
-
-
-  const mdScreenSize = useMediaQuery('(min-width:900px)');
-
   return (
       <div>
         <Header pageProps={pageProps} />
@@ -93,10 +95,10 @@ export default function Home(pageProps) {
             (
               <Grid container spacing={2}sx={{marginTop: '15px'}} >
                 <Grid item md={12}>
-                  <TopBlogCard />
+                  <TopBlogCard blog={content[0]} />
                 </Grid>
-                {content ? 
-                  (content.map((blog) => {
+                {mdScreenSizeContent ? 
+                  (mdScreenSizeContent.map((blog) => {
                     return <Grid item md={4} key={blog.id} sx={{display:'flex', justifyContent:'flex-grow'}}> 
                         <BlogCard blog={blog} key={blog.id} /> 
                     </Grid>
