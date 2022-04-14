@@ -40,12 +40,14 @@ export default function TopBlogCard({blog}) {
                     <Typography variant="body2" color="text.secondary">
                         {timeToRead} min read - {date} 
                     </Typography>
-                    <CardActions>
-                        <Button size="small" onClick={() => navigate()}>Read More</Button>
-                    </CardActions>
-                </CardContent>
-                
+                    <Box>
+                <CardActions>
+                    <Button size="small" onClick={() => navigate()}>Read More</Button>
+                </CardActions>
             </Box>
+                </CardContent>
+            </Box>
+
 
     </Card>
   )
