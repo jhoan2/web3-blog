@@ -5,6 +5,8 @@ import { css } from '@emotion/css'
 import dynamic from 'next/dynamic'
 import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
+import Header from '../../src/components/header/Header'
+import Loading from '../../src/components/Loading'
 
 import {
   contractAddress
@@ -19,9 +21,10 @@ const SimpleMDE = dynamic(
   { ssr: false }
 )
 
-export default function Post() {
+export default function Post({pageProps}) {
   const [post, setPost] = useState(null)
   const [editing, setEditing] = useState(true)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { id } = router.query
 
@@ -31,6 +34,7 @@ export default function Post() {
   async function fetchPost() {
     /* we first fetch the individual post by ipfs hash from the network */
     if (!id) return
+    setLoading(true)
     let provider
     if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'local') {
       provider = new ethers.providers.JsonRpcProvider()
@@ -55,6 +59,7 @@ export default function Post() {
     /* we need this ID to make updates to the post */
     data.id = postId;
     setPost(data)
+    setLoading(false)
   }
 
   async function savePostToIpfs() {
@@ -71,7 +76,7 @@ export default function Post() {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, Blog.abi, signer)
-    await contract.updatePost(post.id, post.title, hash, true)
+    await contract.updatePost(post.id, post.title, hash, post.tags, true)
     router.push('/')
   }
 
@@ -83,8 +88,11 @@ export default function Post() {
       /* editing state will allow the user to toggle between */
       /*  a markdown editor and a markdown renderer */
       }
+      <Header pageProps={pageProps}/>
       {
-        editing && (
+        loading ?
+          <Loading /> :
+          (editing && (
           <div>
             <input
               onChange={e => setPost({ ...post, title: e.target.value })}
@@ -99,12 +107,19 @@ export default function Post() {
               value={post.content}
               onChange={value => setPost({ ...post, content: value })}
             />
+            <input
+              onChange={e => setPost({ ...post, tags: e.target.value })}
+              name='tags'
+              placeholder='Put All first'
+              value={post.tags}
+            />     
             <button className={button} onClick={updatePost}>Update post</button>
-          </div>
+          </div>)
         )
       }
-      {
-        !editing && (
+      { loading ?
+        <Loading /> :
+        (!editing && (
           <div>
             {
               post.coverImagePath && (
@@ -118,7 +133,7 @@ export default function Post() {
             <div className={contentContainer}>
               <ReactMarkdown>{post.content}</ReactMarkdown>
             </div>
-          </div>
+          </div>)
         )
       }
       <button className={button} onClick={() => setEditing(editing ? false : true)}>{ editing ? 'View post' : 'Edit post'}</button>

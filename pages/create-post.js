@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { css } from '@emotion/css'
 import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
-
+import Header from '../src/components/header/Header'
 /* import contract address and contract owner address */
 import {
   contractAddress
@@ -23,7 +23,7 @@ const SimpleMDE = dynamic(
 
 const initialState = { title: '', content: '', tags: '' }
 
-function CreatePost() {
+function CreatePost(pageProps) {
   /* configure initial state to be used in the component */
   const [post, setPost] = useState(initialState)
   const [image, setImage] = useState(null)
@@ -32,7 +32,7 @@ function CreatePost() {
   const fileRef = useRef(null)
   const { title, content, tags } = post
   const router = useRouter()
-
+  
   useEffect(() => {
     setTimeout(() => {
       /* delay rendering buttons until dynamic import is complete */
@@ -96,6 +96,7 @@ function CreatePost() {
 
   return (
     <div className={container}>
+      <Header pageProps={pageProps} />
       {
         image && (
           <img className={coverImageStyle} src={URL.createObjectURL(image)} />
@@ -117,7 +118,7 @@ function CreatePost() {
       <input
         onChange={onChange}
         name='tags'
-        placeholder='Give it tags'
+        placeholder='Put All first'
         value={post.tags}
       />      
       {
