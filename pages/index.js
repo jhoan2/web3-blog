@@ -10,18 +10,23 @@ import Footer from '../src/components/Footer'
 import Masonry from '@mui/lab/Masonry';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Loading from '../src/components/Loading'
+import Pagination from '@mui/material/Pagination';
 
 export default function Home(pageProps) {
   const [tags, setTags] = useState([]);
   const [content, setContent] = useState([]);
   const [currentTag, setCurrentTag] = useState('All');
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const tagMap = new Map();
-  let mdScreenSizeContent = content.slice(1,content.length);
+  let amountPerPage = page * 10;
+  let mdScreenSizeContent = content.slice((amountPerPage - 10 + 1), (amountPerPage + 1));
+  let totalPages = Math.ceil(content.length / 10);
+
   const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
   const query =  `
     query {
-      posts(first: 5, where:{postTag_contains: "${currentTag}"}, orderBy: createdAtTimestamp, orderDirection:desc) {
+      posts(first: 200, where:{postTag_contains: "${currentTag}"}, orderBy: createdAtTimestamp, orderDirection:desc) {
         id
         title
         contentHash
@@ -34,8 +39,6 @@ export default function Home(pageProps) {
       }
     }
   `
-
-
 
   const client = createClient({
     url: APIURL
@@ -82,6 +85,13 @@ export default function Home(pageProps) {
     return tagMap
   }
 
+  const handlePageChange = (event) => {
+    let number = parseInt(event)
+    setPage(number)
+  }
+
+
+
   return (
       <div>
         <Header pageProps={pageProps} />
@@ -115,6 +125,15 @@ export default function Home(pageProps) {
             }
             </Masonry>)
           )}
+          {content && (
+            <Pagination 
+              count={totalPages} 
+              onChange={(e) => handlePageChange(e.target.innerText)}
+              color='primary' 
+              sx={{paddingTop: '25px', display:'flex', justifyContent:'center'}}
+              page={page}
+          />)}
+          
           <Footer />
       </div>
   )
