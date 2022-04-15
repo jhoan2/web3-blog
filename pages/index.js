@@ -118,7 +118,7 @@ export default function Home(pageProps) {
               </Grid>
             )
             :
-            (<Masonry columns={{xs: 2}} spacing={2} sx={{marginTop: '15px'}}>
+            (<Masonry columns={{xs: 1, sm: 2}} spacing={2} sx={{marginTop: '15px'}}>
             {content ? 
               (content.map((blog) => {return <BlogCard blog={blog} key={blog.id} />})) :
               <Loading />
