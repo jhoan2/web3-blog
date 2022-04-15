@@ -10,7 +10,7 @@ import {
   contractAddress
 } from '../config'
 
-import Blog from '../../src/utils/Blog.json'
+import Blog from '../../utils/Blog.json'
 
 /* define the ipfs endpoint */
 const client = create('https://ipfs.infura.io:5001/api/v0')
