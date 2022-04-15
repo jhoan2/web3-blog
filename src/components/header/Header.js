@@ -19,6 +19,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Link from 'next/link'
 import { AccountContext } from '../../../context'
+import airipfp from '../../../public/airipfp.jpg';
 
 export default function Header({pageProps}) {
     const [toggle, setToggle] = useState(false);
@@ -101,7 +102,7 @@ export default function Header({pageProps}) {
             >
             {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
-            <Avatar alt="airipfp" src='/airipfp.jpg' />
+            <Avatar alt="airipfp" src={airipfp} />
             </Grid>
         </Grid>
     </Grid>
