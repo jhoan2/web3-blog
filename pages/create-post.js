@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { css } from '@emotion/css'
 import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
-import { NFTStorage, File } from 'nft.storage'
+import Header from '../src/components/header/Header'
 /* import contract address and contract owner address */
 import {
   contractAddress
@@ -15,26 +15,24 @@ import Blog from '../artifacts/contracts/Blog.sol/Blog.json'
 /* define the ipfs endpoint */
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-const nftStorageClient = new NFTStorage({ token: process.env.NEXT_PUBLIC_API })
-
 /* configure the markdown editor to be client-side import */
 const SimpleMDE = dynamic(
   () => import('react-simplemde-editor'),
   { ssr: false }
 )
 
-const initialState = { title: '', content: '' }
+const initialState = { title: '', content: '', tags: '' }
 
-function CreatePost() {
+function CreatePost(pageProps) {
   /* configure initial state to be used in the component */
   const [post, setPost] = useState(initialState)
   const [image, setImage] = useState(null)
   const [loaded, setLoaded] = useState(false)
 
   const fileRef = useRef(null)
-  const { title, content } = post
+  const { title, content, tags } = post
   const router = useRouter()
-
+  
   useEffect(() => {
     setTimeout(() => {
       /* delay rendering buttons until dynamic import is complete */
@@ -48,7 +46,7 @@ function CreatePost() {
 
   async function createNewPost() {   
     /* saves post to ipfs then anchors to smart contract */
-    if (!title || !content) return
+    if (!title || !content || !tags) return
     const hash = await savePostToIpfs()
     await savePost(hash)
     router.push(`/`)
@@ -72,7 +70,7 @@ function CreatePost() {
       const contract = new ethers.Contract(contractAddress, Blog.abi, signer)
       console.log('contract: ', contract)
       try {
-        const val = await contract.createPost(post.title, hash)
+        const val = await contract.createPost(post.title, hash, post.tags)
         /* optional - wait for transaction to be confirmed before rerouting */
         /* await provider.waitForTransaction(val.hash) */
         console.log('val: ', val)
@@ -92,17 +90,13 @@ function CreatePost() {
     const uploadedFile = e.target.files[0]
     if (!uploadedFile) return
     const added = await client.add(uploadedFile)
-    const metadata = await nftStorageClient.store({
-      name: title,
-      description: content,
-      image: uploadedFile
-    })
-    setPost(state => ({ ...state, coverImage: added.path, metadataURI: metadata.url }))
+    setPost(state => ({ ...state, coverImage: added.path }))
     setImage(uploadedFile)
   }
 
   return (
     <div className={container}>
+      <Header pageProps={pageProps} />
       {
         image && (
           <img className={coverImageStyle} src={URL.createObjectURL(image)} />
@@ -121,6 +115,12 @@ function CreatePost() {
         value={post.content}
         onChange={value => setPost({ ...post, content: value })}
       />
+      <input
+        onChange={onChange}
+        name='tags'
+        placeholder='Put All first'
+        value={post.tags}
+      />      
       {
         loaded && (
           <>

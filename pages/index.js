@@ -1,143 +1,140 @@
-import { css } from '@emotion/css'
-import { useContext } from 'react'
-import { useRouter } from 'next/router'
-import { ethers } from 'ethers'
-import Link from 'next/link'
-import { AccountContext } from '../context'
+import { useState, useEffect } from 'react'
+import { createClient } from 'urql'
+import Grid from '@mui/material/Grid';
+import Header from '../src/components/header/Header'
+import Banner from '../src/components/banner/Banner'
+import TagButton from '../src/components/tags/TagButton'
+import BlogCard from '../src/components/blogcard/BlogCard'
+import TopBlogCard from '../src/components/blogcard/TopBlogCard'
+import Footer from '../src/components/Footer'
+import Masonry from '@mui/lab/Masonry';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Loading from '../src/components/Loading'
+import Pagination from '@mui/material/Pagination';
 
-/* import contract address and contract owner address */
-import {
-  contractAddress, ownerAddress
-} from '../config'
+export default function Home(pageProps) {
+  const [tags, setTags] = useState([]);
+  const [content, setContent] = useState([]);
+  const [currentTag, setCurrentTag] = useState('All');
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const tagMap = new Map();
+  let amountPerPage = page * 10;
+  let mdScreenSizeContent = content.slice((amountPerPage - 10 + 1), (amountPerPage + 1));
+  let totalPages = Math.ceil(content.length / 10);
 
-/* import Application Binary Interface (ABI) */
-import Blog from '../artifacts/contracts/Blog.sol/Blog.json'
+  const APIURL = 'https://api.thegraph.com/subgraphs/name/jhoan2/web3-blog-personal'
+  const query =  `
+    query {
+      posts(first: 200, where:{postTag_contains: "${currentTag}"}, orderBy: createdAtTimestamp, orderDirection:desc) {
+        id
+        title
+        contentHash
+        published
+        postTag
+        postContent
+        coverImage
+        createdAtTimestamp
+        updatedAtTimestamp
+      }
+    }
+  `
 
-export default function Home(props) {
-  /* posts are fetched server side and passed in as props */
-  /* see getServerSideProps */
-  const { posts } = props
-  const account = useContext(AccountContext)
+  const client = createClient({
+    url: APIURL
+  })
 
-  const router = useRouter()
-  async function navigate() {
-    router.push('/create-post')
+  const mdScreenSize = useMediaQuery('(min-width:900px)');
+
+
+  useEffect(() => {
+    fetchTags();
+  }, [])
+
+  useEffect(() => {
+    fetchData();
+  }, [currentTag])
+
+  async function fetchTags() {
+    const response = await client.query(query).toPromise()
+    getTags(response.data)
+    return 
   }
+
+  async function fetchData() {
+    setLoading(true);
+    const response = await client.query(query).toPromise()
+    setContent(response.data.posts)
+    setLoading(false);
+    return 
+  }
+
+  const getTags = ({posts}) => {
+    let tagArr = [];
+    for (let i = 0; i < posts.length; i++) {
+      let postTag = posts[i].postTag.split(' ');
+      for (let j = 0; j < postTag.length; j++) {
+        //hash map to make sure tags are unique
+        if (!(tagMap.has(postTag[j]))) {
+          tagMap.set(postTag[j], tagMap.size + 1)
+          tagArr.push(postTag[j])
+        }
+      }
+    }
+    setTags(tagArr)
+    return tagMap
+  }
+
+  const handlePageChange = (event) => {
+    let number = parseInt(event)
+    setPage(number)
+  }
+
+
 
   return (
-    <div>
-      <div className={postList}>
-        {
-          /* map over the posts array and render a button with the post title */
-          posts.map((post, index) => (
-            <Link href={`/post/${post[2]}`} key={index}>
-              <a>
-                <div className={linkStyle}>
-                  <p className={postTitle}>{post[1]}</p>
-                  <div className={arrowContainer}>
-                  <img
-                      src='/right-arrow.svg'
-                      alt='Right arrow'
-                      className={smallArrow}
-                    />
-                  </div>
-                </div>
-              </a>
-            </Link>
-          ))
-        }
+      <div>
+        <Header pageProps={pageProps} />
+        <Banner />
+        {tags.map((tag, index) => {
+          return <TagButton tag={tag} key={index} setCurrentTag={setCurrentTag} />
+        })}
+        { loading ? 
+          <Loading /> :
+          (mdScreenSize ? 
+            (
+              <Grid container spacing={2}sx={{marginTop: '15px'}} >
+                <Grid item md={12}>
+                  <TopBlogCard blog={content[0]} />
+                </Grid>
+                {mdScreenSizeContent ? 
+                  (mdScreenSizeContent.map((blog) => {
+                    return <Grid item md={4} lg={3} key={blog.id} sx={{display:'flex', justifyContent:'flex-grow'}}> 
+                        <BlogCard blog={blog} key={blog.id} /> 
+                    </Grid>
+                  })) :
+                  <Loading /> 
+                }
+              </Grid>
+            )
+            :
+            (<Masonry columns={{xs: 2}} spacing={2} sx={{marginTop: '15px'}}>
+            {content ? 
+              (content.map((blog) => {return <BlogCard blog={blog} key={blog.id} />})) :
+              <Loading />
+            }
+            </Masonry>)
+          )}
+          {content && (
+            <Pagination 
+              count={totalPages} 
+              onChange={(e) => handlePageChange(e.target.innerText)}
+              color='primary' 
+              sx={{paddingTop: '25px', display:'flex', justifyContent:'center'}}
+              page={page}
+          />)}
+          
+          <Footer />
       </div>
-      <div className={container}>
-        {
-          (account === ownerAddress) && posts && !posts.length && (
-            /* if the signed in user is the account owner, render a button */
-            /* to create the first post */
-            <button className={buttonStyle} onClick={navigate}>
-              Create your first post
-              <img
-                src='/right-arrow.svg'
-                alt='Right arrow'
-                className={arrow}
-              />
-            </button>
-          )
-        }
-      </div>
-    </div>
   )
 }
-
-export async function getServerSideProps() {
-  /* here we check to see the current environment variable */
-  /* and render a provider based on the environment we're in */
-  let provider
-  if (process.env.ENVIRONMENT === 'local') {
-    provider = new ethers.providers.JsonRpcProvider()
-  } else if (process.env.ENVIRONMENT === 'testnet') {
-    provider = new ethers.providers.JsonRpcProvider('https://rpc-mumbai.matic.today')
-  } else {
-    provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
-  }
-
-  const contract = new ethers.Contract(contractAddress, Blog.abi, provider)
-  const data = await contract.fetchPosts()
-  return {
-    props: {
-      posts: JSON.parse(JSON.stringify(data))
-    }
-  }
-}
-
-const arrowContainer = css`
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  padding-right: 20px;
-`
-
-const postTitle = css`
-  font-size: 30px;
-  font-weight: bold;
-  cursor: pointer;
-  margin: 0;
-  padding: 20px;
-`
-
-const linkStyle = css`
-  border: 1px solid #ddd;
-  margin-top: 20px;
-  border-radius: 8px;
-  display: flex;
-`
-
-const postList = css`
-  width: 700px;
-  margin: 0 auto;
-  padding-top: 50px;  
-`
-
-const container = css`
-  display: flex;
-  justify-content: center;
-`
-
-const buttonStyle = css`
-  margin-top: 100px;
-  background-color: #fafafa;
-  outline: none;
-  border: none;
-  font-size: 44px;
-  padding: 20px 70px;
-  border-radius: 15px;
-  cursor: pointer;
-  box-shadow: 7px 7px rgba(0, 0, 0, .1);
-`
-
-const arrow = css`
-  width: 35px;
-  margin-left: 30px;
-`
-
-const smallArrow = css`
-  width: 25px;
-`
