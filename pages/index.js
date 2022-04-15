@@ -109,7 +109,7 @@ export default function Home(pageProps) {
                 </Grid>
                 {mdScreenSizeContent ? 
                   (mdScreenSizeContent.map((blog) => {
-                    return <Grid item md={4} key={blog.id} sx={{display:'flex', justifyContent:'flex-grow'}}> 
+                    return <Grid item md={4} lg={3} key={blog.id} sx={{display:'flex', justifyContent:'flex-grow'}}> 
                         <BlogCard blog={blog} key={blog.id} /> 
                     </Grid>
                   })) :
