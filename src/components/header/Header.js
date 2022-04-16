@@ -101,7 +101,7 @@ export default function Header({pageProps}) {
             >
             {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
-            <Avatar alt="airipfp" src='/airipfp.jpg' />
+            <Avatar alt="airipfp" src='/avatar.png' />
             </Grid>
         </Grid>
     </Grid>
