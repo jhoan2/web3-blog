@@ -1,6 +1,6 @@
 <img src='public/frontpage.PNG' width='700'>
 
-# WEb3 Blog
+# Web3 Blog
 
 A responsive full stack web3 personal blog. Features include dark mode, filtering by tags, pagination, and sorting. Smart contract deployed on Mumbai Testnet. Only the owner of the smart contract can create blog posts. 
 
