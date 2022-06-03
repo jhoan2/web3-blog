@@ -8,6 +8,7 @@ web3-blog-beta.vercel.app
 
 ## Technologies 
 - Next.js
+- React
 - Solidity
 - Graphql
 - The Graph
